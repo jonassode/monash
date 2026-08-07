@@ -17,7 +17,7 @@ export class PathfindingSystem {
    * @param {number} goalR - Goal r coordinate
    * @returns {Array<{q: number, r: number}>|null}
    */
-  findPath(startQ, startR, goalQ, goalR) {
+  findPath(startQ, startR, goalQ, goalR, debug = false) {
     // Validate inputs
     if (startQ === undefined || startQ === null || startR === undefined || startR === null) {
       console.error(`Invalid start position: (${startQ}, ${startR})`);
@@ -33,20 +33,32 @@ export class PathfindingSystem {
     const goalKey = HexMath.coordKey(goalQ, goalR);
     
     if (startKey === goalKey) {
+      if (debug) console.log(`[Pathfinding] Start and goal are the same: (${startQ}, ${startR})`);
       return [];
     }
     
     const startHex = this.hexGrid.getHex(startQ, startR);
     const goalHex = this.hexGrid.getHex(goalQ, goalR);
     
+    if (debug) {
+      console.log(`[Pathfinding] Start: (${startQ}, ${startR}), Goal: (${goalQ}, ${goalR})`);
+      console.log(`[Pathfinding] Start hex exists: ${!!startHex}, Goal hex exists: ${!!goalHex}`);
+      if (startHex) console.log(`[Pathfinding] Start terrain: ${startHex.terrain ? startHex.terrain.name : 'none'}`);
+      if (goalHex) console.log(`[Pathfinding] Goal terrain: ${goalHex.terrain ? goalHex.terrain.name : 'none'}`);
+    }
+    
     if (!startHex || !goalHex) {
+      console.error(`[Pathfinding] Start or goal hex does not exist: start=${!!startHex}, goal=${!!goalHex}`);
       return null;
     }
     
     // Check if goal is passable
     if (goalHex.terrain && !goalHex.terrain.isPassable()) {
+      console.error(`[Pathfinding] Goal hex is not passable: ${goalHex.terrain.name}`);
       return null;
     }
+    
+    // Note: We don't check if start is passable because units can pathfind from an impassable hex
     
     const openSet = new Map();
     const closedSet = new Set();
@@ -73,12 +85,13 @@ export class PathfindingSystem {
         }
       }
       
-      // Guard against null current (shouldn't happen but defensive)
-      if (!current || !currentKey) {
-        return null;
+      if (!currentKey) {
+        if (debug) console.log(`[Pathfinding] No current key found in openSet`);
+        continue; // Skip to next iteration
       }
       
       if (currentKey === goalKey) {
+        if (debug) console.log(`[Pathfinding] Found goal!`);
         return this.reconstructPath(cameFrom, currentKey);
       }
       
@@ -86,6 +99,10 @@ export class PathfindingSystem {
       closedSet.add(currentKey);
       
       const neighbors = this.hexGrid.getNeighbors(current.q, current.r);
+      
+      if (debug && neighbors.length === 0) {
+        console.log(`[Pathfinding] No neighbors for (${current.q}, ${current.r})`);
+      }
       
       for (const neighbor of neighbors) {
         const neighborKey = HexMath.coordKey(neighbor.q, neighbor.r);
@@ -112,6 +129,7 @@ export class PathfindingSystem {
       }
     }
     
+    if (debug) console.log(`[Pathfinding] A* exhausted openSet without finding goal`);
     return null; // No path found
   }
 

@@ -69,7 +69,12 @@ export class SelectionSystem {
     const worldPos = this.renderer.screenToWorld(data.x, data.y);
     const hexCoords = this.hexGrid.pixelToHex(worldPos.x, worldPos.y);
     
-    if (!hexCoords) return;
+    if (!hexCoords) {
+      console.log('[Selection] Right-click on invalid hex (outside grid)');
+      return;
+    }
+    
+    console.log(`[Selection] Right-click on (${hexCoords.q}, ${hexCoords.r})`);
     
     // Command unit to move
     if (this.movementSystem) {

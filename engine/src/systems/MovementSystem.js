@@ -31,8 +31,14 @@ export class MovementSystem {
       return false;
     }
     
-    // Find path
-    const path = this.pathfindingSystem.findPath(unit.q, unit.r, targetQ, targetR);
+    console.log(`[Movement] Moving ${unit.id} from (${unit.q}, ${unit.r}) to (${targetQ}, ${targetR})`);
+    
+    // Check if target hex exists and is valid
+    const targetHex = this.hexGrid.getHex(targetQ, targetR);
+    console.log(`[Movement] Target hex (${targetQ}, ${targetR}) exists: ${!!targetHex}, has terrain: ${targetHex && targetHex.terrain ? true : false}`);
+    
+    // Find path with debug enabled
+    const path = this.pathfindingSystem.findPath(unit.q, unit.r, targetQ, targetR, true);
     
     if (path === null) {
       console.log(`No path found for unit ${unit.id}`);
