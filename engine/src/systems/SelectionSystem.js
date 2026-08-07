@@ -3,14 +3,23 @@
  */
 
 export class SelectionSystem {
-  constructor(hexGrid, eventBus, renderer) {
+  constructor(hexGrid, eventBus, renderer, movementSystem = null) {
     this.hexGrid = hexGrid;
     this.eventBus = eventBus;
     this.renderer = renderer;
+    this.movementSystem = movementSystem;
     
     this.selectedEntity = null;
     
     this.initializeListeners();
+  }
+
+  /**
+   * Set the movement system
+   * @param {Object} movementSystem - MovementSystem instance
+   */
+  setMovementSystem(movementSystem) {
+    this.movementSystem = movementSystem;
   }
 
   /**
@@ -19,6 +28,7 @@ export class SelectionSystem {
   initializeListeners() {
     this.eventBus.on('click', (data) => this.handleClick(data));
     this.eventBus.on('mouseMove', (data) => this.handleMouseMove(data));
+    this.eventBus.on('mouseUp', (data) => this.handleMouseUp(data));
   }
 
   /**
@@ -40,6 +50,30 @@ export class SelectionSystem {
       this.selectEntity(hex.entity);
     } else {
       this.deselectEntity();
+    }
+  }
+
+  /**
+   * Handle mouse up event (right-click movement)
+   * @param {Object} data - Mouse up event data
+   */
+  handleMouseUp(data) {
+    // Right-click (button 2)
+    if (data.button !== 2) return;
+    
+    if (!this.selectedEntity || this.selectedEntity.type !== 'unit') {
+      return;
+    }
+    
+    // Get target hex coordinates
+    const worldPos = this.renderer.screenToWorld(data.x, data.y);
+    const hexCoords = this.hexGrid.pixelToHex(worldPos.x, worldPos.y);
+    
+    if (!hexCoords) return;
+    
+    // Command unit to move
+    if (this.movementSystem) {
+      this.movementSystem.moveUnit(this.selectedEntity, hexCoords.q, hexCoords.r);
     }
   }
 

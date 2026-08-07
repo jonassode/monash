@@ -23,6 +23,7 @@ export { HexRenderer } from './rendering/HexRenderer.js';
 export { SelectionSystem } from './systems/SelectionSystem.js';
 export { TaskSystem } from './systems/TaskSystem.js';
 export { PathfindingSystem } from './systems/PathfindingSystem.js';
+export { MovementSystem } from './systems/MovementSystem.js';
 
 // Utils
 export { HexMath } from './utils/HexMath.js';

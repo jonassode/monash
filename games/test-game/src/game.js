@@ -12,6 +12,7 @@ import {
   SelectionSystem,
   TaskSystem,
   PathfindingSystem,
+  MovementSystem,
   Terrain,
   Building,
   Unit,
@@ -30,6 +31,7 @@ class TestGame {
     this.selectionSystem = null;
     this.taskSystem = null;
     this.pathfindingSystem = null;
+    this.movementSystem = null;
     
     this.terrainTypes = new Map();
     this.buildingTypes = new Map();
@@ -81,6 +83,10 @@ class TestGame {
     // Initialize remaining systems
     this.selectionSystem = new SelectionSystem(this.hexGrid, this.eventBus, this.renderer);
     this.pathfindingSystem = new PathfindingSystem(this.hexGrid);
+    this.movementSystem = new MovementSystem(this.hexGrid, this.pathfindingSystem, this.eventBus);
+    
+    // Connect movement system to selection system
+    this.selectionSystem.setMovementSystem(this.movementSystem);
     
     // Load map
     await this.loadMap();
@@ -213,6 +219,22 @@ class TestGame {
       this.updateUI();
     });
     
+    // Movement events
+    this.eventBus.on('unitMovementStarted', (data) => {
+      console.log('Unit movement started:', data.unit.id, `Target: (${data.targetQ}, ${data.targetR})`);
+      this.updateUI();
+    });
+    
+    this.eventBus.on('unitMovementComplete', (data) => {
+      console.log('Unit movement complete:', data.unit.id);
+      this.updateUI();
+    });
+    
+    this.eventBus.on('unitMovementStopped', (data) => {
+      console.log('Unit movement stopped:', data.unit.id);
+      this.updateUI();
+    });
+    
     // Task events
     this.eventBus.on('taskQueued', (data) => {
       console.log('Task queued:', data.task.name);
@@ -263,6 +285,26 @@ class TestGame {
         <p>Position: (${selectedEntity.q}, ${selectedEntity.r})</p>
       `;
       
+      if (selectedEntity.type === 'unit') {
+        html += `
+          <h4>Unit Stats:</h4>
+          <p>Movement Speed: ${selectedEntity.getMovementSpeed()} hex/sec</p>
+          <p>Movement Range: ${selectedEntity.getMovementRange()}</p>
+          <p>State: ${selectedEntity.getState()}</p>
+        `;
+        
+        if (selectedEntity.isMoving()) {
+          html += `
+            <p style="color: #00FF00;">Moving...</p>
+            <p>Path: ${selectedEntity.path.length} hex(es) remaining</p>
+          `;
+        } else {
+          html += `
+            <p style="color: #FFFF00;">Right-click to move</p>
+          `;
+        }
+      }
+      
       if (selectedEntity.type === 'building') {
         html += '<h4>Available Tasks:</h4>';
         const tasks = this.taskSystem.getAvailableTasks(selectedEntity);
@@ -296,6 +338,7 @@ class TestGame {
         <p style="font-size: 0.8em;">
           Controls:<br>
           - Click to select<br>
+          - Right-click (units) to move<br>
           - Drag to pan camera<br>
           - Scroll to zoom<br>
           - Space to pause
@@ -314,6 +357,9 @@ class TestGame {
   }
 
   update(deltaTime) {
+    // Update movement system
+    this.movementSystem.update(deltaTime);
+    
     // Update task system
     this.taskSystem.update(deltaTime, this.entities);
     
