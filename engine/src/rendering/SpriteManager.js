@@ -99,6 +99,54 @@ export class SpriteManager {
   }
 
   /**
+   * Create a hexagonal sprite (for terrain tiles)
+   * @param {string} id - Sprite ID
+   * @param {number} size - Hex radius (distance from center to corner)
+   * @param {string} color - Fill color
+   * @param {boolean} flatTop - Flat-top orientation (default: true)
+   * @returns {HTMLCanvasElement}
+   */
+  createHexagonalSprite(id, size, color, flatTop = true) {
+    // Calculate canvas size to fit the hexagon
+    const width = flatTop ? size * 2 : size * Math.sqrt(3);
+    const height = flatTop ? size * Math.sqrt(3) : size * 2;
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(width) + 2; // Add padding for border
+    canvas.height = Math.ceil(height) + 2;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Center the hexagon in the canvas
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    
+    // Draw hexagon
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = flatTop 
+        ? (Math.PI / 180) * (60 * i)
+        : (Math.PI / 180) * (60 * i + 30);
+      const x = centerX + size * Math.cos(angle);
+      const y = centerY + size * Math.sin(angle);
+      
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+    ctx.closePath();
+    
+    // Fill hexagon
+    ctx.fillStyle = color;
+    ctx.fill();
+    
+    this.sprites.set(id, canvas);
+    return canvas;
+  }
+
+  /**
    * Clear all loaded sprites
    */
   clear() {
