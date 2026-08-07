@@ -142,9 +142,12 @@ export class PathfindingSystem {
         if (!openSet.has(neighborKey)) {
           openSet.set(neighborKey, { q: neighbor.q, r: neighbor.r });
           if (debug) console.log(`[Pathfinding]     Added new neighbor ${neighborKey} to openSet`);
-        } else if (tentativeGScore >= (gScore.get(neighborKey) || Infinity)) {
-          if (debug) console.log(`[Pathfinding]     Neighbor ${neighborKey} already in openSet with better or equal score`);
-          continue;
+        } else {
+          const neighborGScore = gScore.get(neighborKey);
+          if (tentativeGScore >= (neighborGScore !== undefined ? neighborGScore : Infinity)) {
+            if (debug) console.log(`[Pathfinding]     Neighbor ${neighborKey} already in openSet with better or equal score`);
+            continue;
+          }
         }
         
         cameFrom.set(neighborKey, currentKey);
