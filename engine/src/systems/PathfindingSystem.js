@@ -68,6 +68,10 @@ export class PathfindingSystem {
     
     gScore.set(startKey, 0);
     const heuristicValue = this.heuristic(startQ, startR, goalQ, goalR);
+    if (typeof heuristicValue !== 'number' || isNaN(heuristicValue)) {
+      console.error(`[Pathfinding] Invalid heuristic value: ${heuristicValue} (type: ${typeof heuristicValue})`);
+      return null;
+    }
     fScore.set(startKey, heuristicValue);
     openSet.set(startKey, { q: startQ, r: startR });
     
