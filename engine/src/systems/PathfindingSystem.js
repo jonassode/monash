@@ -78,7 +78,7 @@ export class PathfindingSystem {
       // Get node with lowest fScore
       let current = null;
       let currentKey = null;
-      let lowestF = Infinity;
+      let lowestF = Number.MAX_VALUE;
       
       if (debug) console.log(`[Pathfinding] Loop iteration: openSet.size=${openSet.size}, fScore.size=${fScore.size}`);
       
