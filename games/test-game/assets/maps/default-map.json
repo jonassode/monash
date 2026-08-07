@@ -1,0 +1,42 @@
+{
+  "width": 20,
+  "height": 15,
+  "hexes": [
+    {"q": 0, "r": 0, "terrain": "grass"},
+    {"q": 1, "r": 0, "terrain": "grass"},
+    {"q": 2, "r": 0, "terrain": "forest"},
+    {"q": 3, "r": 0, "terrain": "grass"},
+    {"q": 4, "r": 0, "terrain": "grass"},
+    {"q": 5, "r": 0, "terrain": "mountain"},
+    {"q": 6, "r": 0, "terrain": "grass"},
+    {"q": 7, "r": 0, "terrain": "water"},
+    {"q": 8, "r": 0, "terrain": "water"},
+    {"q": 9, "r": 0, "terrain": "grass"},
+    {"q": 0, "r": 1, "terrain": "grass"},
+    {"q": 1, "r": 1, "terrain": "road"},
+    {"q": 2, "r": 1, "terrain": "road"},
+    {"q": 3, "r": 1, "terrain": "grass"},
+    {"q": 4, "r": 1, "terrain": "forest"},
+    {"q": 5, "r": 1, "terrain": "mountain"},
+    {"q": 6, "r": 1, "terrain": "grass"},
+    {"q": 7, "r": 1, "terrain": "grass"},
+    {"q": 8, "r": 1, "terrain": "water"},
+    {"q": 9, "r": 1, "terrain": "grass"},
+    {"q": 0, "r": 2, "terrain": "forest"},
+    {"q": 1, "r": 2, "terrain": "grass"},
+    {"q": 2, "r": 2, "terrain": "grass"},
+    {"q": 3, "r": 2, "terrain": "grass"},
+    {"q": 4, "r": 2, "terrain": "grass"},
+    {"q": 5, "r": 2, "terrain": "grass"},
+    {"q": 6, "r": 2, "terrain": "mountain"},
+    {"q": 7, "r": 2, "terrain": "grass"},
+    {"q": 8, "r": 2, "terrain": "grass"},
+    {"q": 9, "r": 2, "terrain": "forest"}
+  ],
+  "entities": [
+    {"type": "building", "id": "town_hall", "q": 2, "r": 1},
+    {"type": "building", "id": "farm", "q": 4, "r": 2},
+    {"type": "unit", "id": "worker", "q": 1, "r": 1},
+    {"type": "unit", "id": "scout", "q": 3, "r": 2}
+  ]
+}

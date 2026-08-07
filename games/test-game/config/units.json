@@ -1,0 +1,20 @@
+{
+  "worker": {
+    "name": "Worker",
+    "spriteId": "unit_worker",
+    "movementRange": 3,
+    "movementSpeed": 1.0
+  },
+  "scout": {
+    "name": "Scout",
+    "spriteId": "unit_scout",
+    "movementRange": 5,
+    "movementSpeed": 1.5
+  },
+  "soldier": {
+    "name": "Soldier",
+    "spriteId": "unit_soldier",
+    "movementRange": 3,
+    "movementSpeed": 1.0
+  }
+}

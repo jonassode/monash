@@ -1,0 +1,42 @@
+{
+  "grass": {
+    "name": "Grassland",
+    "passable": true,
+    "movementCost": 1.0,
+    "isWater": false,
+    "blocksBuilding": false,
+    "spriteId": "terrain_grass"
+  },
+  "forest": {
+    "name": "Forest",
+    "passable": true,
+    "movementCost": 1.5,
+    "isWater": false,
+    "blocksBuilding": true,
+    "spriteId": "terrain_forest"
+  },
+  "mountain": {
+    "name": "Mountain",
+    "passable": false,
+    "movementCost": 0,
+    "isWater": false,
+    "blocksBuilding": true,
+    "spriteId": "terrain_mountain"
+  },
+  "water": {
+    "name": "Water",
+    "passable": false,
+    "movementCost": 0,
+    "isWater": true,
+    "blocksBuilding": true,
+    "spriteId": "terrain_water"
+  },
+  "road": {
+    "name": "Road",
+    "passable": true,
+    "movementCost": 0.7,
+    "isWater": false,
+    "blocksBuilding": false,
+    "spriteId": "terrain_road"
+  }
+}

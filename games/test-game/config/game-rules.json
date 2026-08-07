@@ -1,0 +1,36 @@
+{
+  "name": "Test Game",
+  "description": "A simple settlement management game",
+  "tasks": {
+    "train_worker": {
+      "name": "Train Worker",
+      "description": "Train a new worker unit",
+      "duration": 10
+    },
+    "research_tech": {
+      "name": "Research Technology",
+      "description": "Research a new technology (placeholder)",
+      "duration": 20
+    },
+    "harvest_crops": {
+      "name": "Harvest Crops",
+      "description": "Harvest crops from the farm",
+      "duration": 15
+    },
+    "train_soldier": {
+      "name": "Train Soldier",
+      "description": "Train a soldier unit",
+      "duration": 12
+    },
+    "extract_ore": {
+      "name": "Extract Ore",
+      "description": "Extract ore from the mine",
+      "duration": 18
+    }
+  },
+  "victoryConditions": {
+    "resourceThreshold": 1000,
+    "buildingCount": 10,
+    "timeLimit": 600
+  }
+}

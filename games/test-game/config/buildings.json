@@ -1,0 +1,30 @@
+{
+  "town_hall": {
+    "name": "Town Hall",
+    "spriteId": "building_town_hall",
+    "allowedTerrain": ["grass", "road"],
+    "size": 1,
+    "tasks": ["train_worker", "research_tech"]
+  },
+  "farm": {
+    "name": "Farm",
+    "spriteId": "building_farm",
+    "allowedTerrain": ["grass"],
+    "size": 1,
+    "tasks": ["harvest_crops"]
+  },
+  "barracks": {
+    "name": "Barracks",
+    "spriteId": "building_barracks",
+    "allowedTerrain": ["grass", "road"],
+    "size": 1,
+    "tasks": ["train_soldier"]
+  },
+  "mine": {
+    "name": "Mine",
+    "spriteId": "building_mine",
+    "allowedTerrain": ["grass", "mountain"],
+    "size": 1,
+    "tasks": ["extract_ore"]
+  }
+}
