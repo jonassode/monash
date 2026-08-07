@@ -83,13 +83,13 @@ export class Renderer {
       const sprite = this.spriteManager.getSprite(hex.terrain.spriteId);
       
       if (sprite) {
-        const size = this.hexGrid.hexSize * 1.5;
+        // Use sprite's natural dimensions (hexagonal sprites are already properly sized)
         this.ctx.drawImage(
           sprite,
-          pos.x - size / 2,
-          pos.y - size / 2,
-          size,
-          size
+          pos.x - sprite.width / 2,
+          pos.y - sprite.height / 2,
+          sprite.width,
+          sprite.height
         );
       }
     }

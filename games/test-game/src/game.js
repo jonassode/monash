@@ -138,12 +138,14 @@ class TestGame {
     console.log('Creating placeholder sprites...');
     
     // Terrain sprites - use hexagonal shape with size matching the hex grid
+    // The renderer scales by 1.5, so we create sprites that will fill the entire hex
     const hexSize = 32; // Match the hex grid size
-    this.spriteManager.createHexagonalSprite('terrain_grass', hexSize, '#90EE90', true);
-    this.spriteManager.createHexagonalSprite('terrain_forest', hexSize, '#228B22', true);
-    this.spriteManager.createHexagonalSprite('terrain_mountain', hexSize, '#A9A9A9', true);
-    this.spriteManager.createHexagonalSprite('terrain_water', hexSize, '#4169E1', true);
-    this.spriteManager.createHexagonalSprite('terrain_road', hexSize, '#8B4513', true);
+    const terrainHexSize = hexSize; // Use full hex size for terrain to fill the cell
+    this.spriteManager.createHexagonalSprite('terrain_grass', terrainHexSize, '#90EE90', true);
+    this.spriteManager.createHexagonalSprite('terrain_forest', terrainHexSize, '#228B22', true);
+    this.spriteManager.createHexagonalSprite('terrain_mountain', terrainHexSize, '#A9A9A9', true);
+    this.spriteManager.createHexagonalSprite('terrain_water', terrainHexSize, '#4169E1', true);
+    this.spriteManager.createHexagonalSprite('terrain_road', terrainHexSize, '#8B4513', true);
     
     // Building sprites - keep as colored squares
     this.spriteManager.createColoredSprite('building_town_hall', 32, 32, '#FFD700');
