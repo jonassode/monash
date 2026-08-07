@@ -135,7 +135,9 @@ export class PathfindingSystem {
         }
         
         const movementCost = neighbor.terrain ? neighbor.terrain.getMovementCost() : 1;
-        const tentativeGScore = (gScore.get(currentKey) || Infinity) + movementCost;
+        const currentGScore = gScore.get(currentKey);
+        if (debug) console.log(`[Pathfinding]     currentKey: ${currentKey}, currentGScore: ${currentGScore}, movementCost: ${movementCost}`);
+        const tentativeGScore = (currentGScore !== undefined ? currentGScore : Infinity) + movementCost;
         
         if (!openSet.has(neighborKey)) {
           openSet.set(neighborKey, { q: neighbor.q, r: neighbor.r });
