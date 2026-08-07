@@ -67,11 +67,14 @@ export class PathfindingSystem {
     const fScore = new Map();
     
     gScore.set(startKey, 0);
-    fScore.set(startKey, this.heuristic(startQ, startR, goalQ, goalR));
+    const heuristicValue = this.heuristic(startQ, startR, goalQ, goalR);
+    fScore.set(startKey, heuristicValue);
     openSet.set(startKey, { q: startQ, r: startR });
     
     if (debug) {
-      console.log(`[Pathfinding] Initial setup - startKey: ${startKey}, fScore: ${fScore.get(startKey)}, openSet.size: ${openSet.size}`);
+      console.log(`[Pathfinding] Initial setup - startKey: ${startKey}, heuristic: ${heuristicValue}, fScore.get(startKey): ${fScore.get(startKey)}, openSet.size: ${openSet.size}`);
+      console.log(`[Pathfinding] fScore Map contents:`, Array.from(fScore.entries()));
+      console.log(`[Pathfinding] openSet Map contents:`, Array.from(openSet.entries()));
     }
     
     while (openSet.size > 0) {
@@ -84,13 +87,18 @@ export class PathfindingSystem {
       
       for (const [key, coord] of openSet) {
         const f = fScore.get(key);
-        if (debug) console.log(`[Pathfinding]   Checking key: ${key}, f=${f}`);
-        if (f !== undefined && f < lowestF) {
+        const isDefined = f !== undefined;
+        const isLower = isDefined && f < lowestF;
+        if (debug) console.log(`[Pathfinding]   Checking key: ${key}, f=${f}, isDefined=${isDefined}, isLower=${isLower}, lowestF=${lowestF}`);
+        if (isDefined && f < lowestF) {
           lowestF = f;
           currentKey = key;
           current = coord;
+          if (debug) console.log(`[Pathfinding]   -> Updated currentKey to ${key}`);
         }
       }
+      
+      if (debug) console.log(`[Pathfinding] After loop: currentKey=${currentKey}, lowestF=${lowestF}`);
       
       if (!currentKey) {
         if (debug) console.log(`[Pathfinding] No current key found in openSet (lowestF was ${lowestF})`);
@@ -118,6 +126,7 @@ export class PathfindingSystem {
         
         // Check if passable
         if (neighbor.terrain && !neighbor.terrain.isPassable()) {
+          if (debug) console.log(`[Pathfinding]     Neighbor ${neighborKey} is not passable`);
           continue;
         }
         
@@ -126,13 +135,16 @@ export class PathfindingSystem {
         
         if (!openSet.has(neighborKey)) {
           openSet.set(neighborKey, { q: neighbor.q, r: neighbor.r });
+          if (debug) console.log(`[Pathfinding]     Added new neighbor ${neighborKey} to openSet`);
         } else if (tentativeGScore >= (gScore.get(neighborKey) || Infinity)) {
+          if (debug) console.log(`[Pathfinding]     Neighbor ${neighborKey} already in openSet with better or equal score`);
           continue;
         }
         
         cameFrom.set(neighborKey, currentKey);
         gScore.set(neighborKey, tentativeGScore);
         fScore.set(neighborKey, tentativeGScore + this.heuristic(neighbor.q, neighbor.r, goalQ, goalR));
+        if (debug) console.log(`[Pathfinding]     Updated neighbor ${neighborKey} with gScore=${tentativeGScore}, fScore=${fScore.get(neighborKey)}`);
       }
     }
     
