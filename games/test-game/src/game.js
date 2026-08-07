@@ -137,20 +137,21 @@ class TestGame {
   async createPlaceholderSprites() {
     console.log('Creating placeholder sprites...');
     
-    // Terrain sprites
-    this.spriteManager.createColoredSprite('terrain_grass', 48, 48, '#90EE90');
-    this.spriteManager.createColoredSprite('terrain_forest', 48, 48, '#228B22');
-    this.spriteManager.createColoredSprite('terrain_mountain', 48, 48, '#A9A9A9');
-    this.spriteManager.createColoredSprite('terrain_water', 48, 48, '#4169E1');
-    this.spriteManager.createColoredSprite('terrain_road', 48, 48, '#8B4513');
+    // Terrain sprites - use hexagonal shape with size matching the hex grid
+    const hexSize = 32; // Match the hex grid size
+    this.spriteManager.createHexagonalSprite('terrain_grass', hexSize, '#90EE90', true);
+    this.spriteManager.createHexagonalSprite('terrain_forest', hexSize, '#228B22', true);
+    this.spriteManager.createHexagonalSprite('terrain_mountain', hexSize, '#A9A9A9', true);
+    this.spriteManager.createHexagonalSprite('terrain_water', hexSize, '#4169E1', true);
+    this.spriteManager.createHexagonalSprite('terrain_road', hexSize, '#8B4513', true);
     
-    // Building sprites
+    // Building sprites - keep as colored squares
     this.spriteManager.createColoredSprite('building_town_hall', 32, 32, '#FFD700');
     this.spriteManager.createColoredSprite('building_farm', 32, 32, '#8B4513');
     this.spriteManager.createColoredSprite('building_barracks', 32, 32, '#DC143C');
     this.spriteManager.createColoredSprite('building_mine', 32, 32, '#696969');
     
-    // Unit sprites
+    // Unit sprites - keep as colored squares
     this.spriteManager.createColoredSprite('unit_worker', 24, 24, '#FFFF00');
     this.spriteManager.createColoredSprite('unit_scout', 24, 24, '#00FF00');
     this.spriteManager.createColoredSprite('unit_soldier', 24, 24, '#FF0000');
