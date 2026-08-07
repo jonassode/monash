@@ -87,7 +87,7 @@ export class PathfindingSystem {
       
       if (!currentKey) {
         if (debug) console.log(`[Pathfinding] No current key found in openSet`);
-        continue; // Skip to next iteration
+        break; // Exit the loop to avoid infinite loop
       }
       
       if (currentKey === goalKey) {
