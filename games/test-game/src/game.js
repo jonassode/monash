@@ -56,6 +56,9 @@ class TestGame {
     // Initialize event bus
     this.eventBus = new EventBus();
     
+    // Initialize task system (needed for loadConfigurations)
+    this.taskSystem = new TaskSystem(this.eventBus);
+    
     // Load configurations
     await this.loadConfigurations();
     
@@ -75,9 +78,8 @@ class TestGame {
     // Initialize input handler
     this.inputHandler = new InputHandler(this.canvas, this.eventBus);
     
-    // Initialize systems
+    // Initialize remaining systems
     this.selectionSystem = new SelectionSystem(this.hexGrid, this.eventBus, this.renderer);
-    this.taskSystem = new TaskSystem(this.eventBus);
     this.pathfindingSystem = new PathfindingSystem(this.hexGrid);
     
     // Load map
