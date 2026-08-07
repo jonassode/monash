@@ -70,15 +70,22 @@ export class PathfindingSystem {
     fScore.set(startKey, this.heuristic(startQ, startR, goalQ, goalR));
     openSet.set(startKey, { q: startQ, r: startR });
     
+    if (debug) {
+      console.log(`[Pathfinding] Initial setup - startKey: ${startKey}, fScore: ${fScore.get(startKey)}, openSet.size: ${openSet.size}`);
+    }
+    
     while (openSet.size > 0) {
       // Get node with lowest fScore
       let current = null;
       let currentKey = null;
       let lowestF = Infinity;
       
+      if (debug) console.log(`[Pathfinding] Loop iteration: openSet.size=${openSet.size}, fScore.size=${fScore.size}`);
+      
       for (const [key, coord] of openSet) {
-        const f = fScore.get(key) || Infinity;
-        if (f < lowestF) {
+        const f = fScore.get(key);
+        if (debug) console.log(`[Pathfinding]   Checking key: ${key}, f=${f}`);
+        if (f !== undefined && f < lowestF) {
           lowestF = f;
           currentKey = key;
           current = coord;
@@ -86,7 +93,7 @@ export class PathfindingSystem {
       }
       
       if (!currentKey) {
-        if (debug) console.log(`[Pathfinding] No current key found in openSet`);
+        if (debug) console.log(`[Pathfinding] No current key found in openSet (lowestF was ${lowestF})`);
         break; // Exit the loop to avoid infinite loop
       }
       
