@@ -80,11 +80,11 @@ export class GameLoop {
         this.updateCallback(this.fixedDeltaTime / 1000); // Pass delta in seconds
         this.accumulator -= this.fixedDeltaTime;
       }
-
-      // Render with interpolation factor
-      const alpha = this.accumulator / this.fixedDeltaTime;
-      this.renderCallback(alpha);
     }
+
+    // Always render to show current state
+    const alpha = this.isPaused ? 0 : (this.accumulator / this.fixedDeltaTime);
+    this.renderCallback(alpha);
 
     // Continue loop
     this.frameId = requestAnimationFrame((time) => this.loop(time));
