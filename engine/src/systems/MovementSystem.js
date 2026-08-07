@@ -19,6 +19,18 @@ export class MovementSystem {
    * @returns {boolean} Success
    */
   moveUnit(unit, targetQ, targetR) {
+    // Validate unit position
+    if (unit.q === undefined || unit.q === null || unit.r === undefined || unit.r === null) {
+      console.error(`Unit ${unit.id} does not have a valid position: (${unit.q}, ${unit.r})`);
+      return false;
+    }
+    
+    // Validate target position
+    if (targetQ === undefined || targetQ === null || targetR === undefined || targetR === null) {
+      console.error(`Invalid target position: (${targetQ}, ${targetR})`);
+      return false;
+    }
+    
     // Find path
     const path = this.pathfindingSystem.findPath(unit.q, unit.r, targetQ, targetR);
     

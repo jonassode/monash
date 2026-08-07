@@ -18,6 +18,17 @@ export class PathfindingSystem {
    * @returns {Array<{q: number, r: number}>|null}
    */
   findPath(startQ, startR, goalQ, goalR) {
+    // Validate inputs
+    if (startQ === undefined || startQ === null || startR === undefined || startR === null) {
+      console.error(`Invalid start position: (${startQ}, ${startR})`);
+      return null;
+    }
+    
+    if (goalQ === undefined || goalQ === null || goalR === undefined || goalR === null) {
+      console.error(`Invalid goal position: (${goalQ}, ${goalR})`);
+      return null;
+    }
+    
     const startKey = HexMath.coordKey(startQ, startR);
     const goalKey = HexMath.coordKey(goalQ, goalR);
     
@@ -60,6 +71,11 @@ export class PathfindingSystem {
           currentKey = key;
           current = coord;
         }
+      }
+      
+      // Guard against null current (shouldn't happen but defensive)
+      if (!current || !currentKey) {
+        return null;
       }
       
       if (currentKey === goalKey) {
