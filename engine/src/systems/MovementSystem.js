@@ -147,6 +147,10 @@ export class MovementSystem {
     // Remove the hexes we've traversed from the path
     unit.path.splice(0, pathIndex);
     
+    // Update unit's actual coordinates to match the movement
+    unit.q = currentPos.q;
+    unit.r = currentPos.r;
+    
     // If path is empty or we've reached the target, mark as arrived
     if (unit.path.length === 0) {
       unit.stop();
