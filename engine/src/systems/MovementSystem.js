@@ -109,7 +109,6 @@ export class MovementSystem {
   updateUnitMovement(unit, deltaTime) {
     
     if (unit.path.length === 0) return;
-    console.log('moving unit');
     
     // Accumulate movement distance over frames
     // movementSpeed is in hexes per second
@@ -128,10 +127,6 @@ export class MovementSystem {
       // Calculate terrain movement cost
       const nextHexData = this.hexGrid.getHex(nextHex.q, nextHex.r);
       const terrainCost = nextHexData.terrain ? nextHexData.terrain.getMovementCost() : 1;
-
-      console.log('remaining distance ' + remainingDistance);
-      console.log('terrainCost ' + terrainCost);
-
       
       // Check if we have enough distance to move to this hex
       if (remainingDistance >= terrainCost) {
