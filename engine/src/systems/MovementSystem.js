@@ -111,13 +111,13 @@ export class MovementSystem {
     if (unit.path.length === 0) return;
     console.log('moving unit');
     
-    // Calculate distance the unit can travel this frame
+    // Accumulate movement distance over frames
     // movementSpeed is in hexes per second
-    const distancePerFrame = unit.getMovementSpeed() * deltaTime;
+    unit.accumulatedDistance += unit.getMovementSpeed() * deltaTime;
     
     // Move towards current target hex in path
     const currentPos = { q: unit.q, r: unit.r };
-    let remainingDistance = distancePerFrame;
+    let remainingDistance = unit.accumulatedDistance;
     let pathIndex = 0;
     
     // Traverse path hexes
@@ -150,6 +150,9 @@ export class MovementSystem {
         break;
       }
     }
+    
+    // Update accumulated distance (subtract what was used)
+    unit.accumulatedDistance = remainingDistance;
     
     // Remove the hexes we've traversed from the path
     unit.path.splice(0, pathIndex);

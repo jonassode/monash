@@ -17,6 +17,7 @@ export class Unit extends Entity {
     this.path = [];
     this.targetQ = null;
     this.targetR = null;
+    this.accumulatedDistance = 0; // Accumulate movement distance over frames
   }
 
   /**
@@ -98,5 +99,6 @@ export class Unit extends Entity {
     this.path = [];
     this.targetQ = null;
     this.targetR = null;
+    this.accumulatedDistance = 0; // Reset accumulated distance
   }
 }
