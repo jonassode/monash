@@ -122,13 +122,16 @@ export class MovementSystem {
     
     // Traverse path hexes
     while (pathIndex < unit.path.length && remainingDistance > 0) {
-      console.log('remaining distance ' + remainingDistance);
       
       const nextHex = unit.path[pathIndex];
       
       // Calculate terrain movement cost
       const nextHexData = this.hexGrid.getHex(nextHex.q, nextHex.r);
       const terrainCost = nextHexData.terrain ? nextHexData.terrain.getMovementCost() : 1;
+
+      console.log('remaining distance ' + remainingDistance);
+      console.log('terrainCost ' + terrainCost);
+
       
       // Check if we have enough distance to move to this hex
       if (remainingDistance >= terrainCost) {
