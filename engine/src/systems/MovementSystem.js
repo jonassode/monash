@@ -107,7 +107,9 @@ export class MovementSystem {
    * @param {number} deltaTime - Time since last update in seconds
    */
   updateUnitMovement(unit, deltaTime) {
+    
     if (unit.path.length === 0) return;
+    console.log('moving unit');
     
     // Calculate distance the unit can travel this frame
     // movementSpeed is in hexes per second
@@ -120,6 +122,8 @@ export class MovementSystem {
     
     // Traverse path hexes
     while (pathIndex < unit.path.length && remainingDistance > 0) {
+      console.log('remaining distance ' + remainingDistance);
+      
       const nextHex = unit.path[pathIndex];
       
       // Calculate terrain movement cost
