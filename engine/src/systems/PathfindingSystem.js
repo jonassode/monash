@@ -17,25 +17,48 @@ export class PathfindingSystem {
    * @param {number} goalR - Goal r coordinate
    * @returns {Array<{q: number, r: number}>|null}
    */
-  findPath(startQ, startR, goalQ, goalR) {
+  findPath(startQ, startR, goalQ, goalR, debug = false) {
+    // Validate inputs
+    if (startQ === undefined || startQ === null || startR === undefined || startR === null) {
+      console.error(`Invalid start position: (${startQ}, ${startR})`);
+      return null;
+    }
+    
+    if (goalQ === undefined || goalQ === null || goalR === undefined || goalR === null) {
+      console.error(`Invalid goal position: (${goalQ}, ${goalR})`);
+      return null;
+    }
+    
     const startKey = HexMath.coordKey(startQ, startR);
     const goalKey = HexMath.coordKey(goalQ, goalR);
     
     if (startKey === goalKey) {
+      if (debug) console.log(`[Pathfinding] Start and goal are the same: (${startQ}, ${startR})`);
       return [];
     }
     
     const startHex = this.hexGrid.getHex(startQ, startR);
     const goalHex = this.hexGrid.getHex(goalQ, goalR);
     
+    if (debug) {
+      console.log(`[Pathfinding] Start: (${startQ}, ${startR}), Goal: (${goalQ}, ${goalR})`);
+      console.log(`[Pathfinding] Start hex exists: ${!!startHex}, Goal hex exists: ${!!goalHex}`);
+      if (startHex) console.log(`[Pathfinding] Start terrain: ${startHex.terrain ? startHex.terrain.name : 'none'}`);
+      if (goalHex) console.log(`[Pathfinding] Goal terrain: ${goalHex.terrain ? goalHex.terrain.name : 'none'}`);
+    }
+    
     if (!startHex || !goalHex) {
+      console.error(`[Pathfinding] Start or goal hex does not exist: start=${!!startHex}, goal=${!!goalHex}`);
       return null;
     }
     
     // Check if goal is passable
     if (goalHex.terrain && !goalHex.terrain.isPassable()) {
+      console.error(`[Pathfinding] Goal hex is not passable: ${goalHex.terrain.name}`);
       return null;
     }
+    
+    // Note: We don't check if start is passable because units can pathfind from an impassable hex
     
     const openSet = new Map();
     const closedSet = new Set();
@@ -44,25 +67,50 @@ export class PathfindingSystem {
     const fScore = new Map();
     
     gScore.set(startKey, 0);
-    fScore.set(startKey, this.heuristic(startQ, startR, goalQ, goalR));
+    const heuristicValue = this.heuristic(startQ, startR, goalQ, goalR);
+    if (typeof heuristicValue !== 'number' || isNaN(heuristicValue)) {
+      console.error(`[Pathfinding] Invalid heuristic value: ${heuristicValue} (type: ${typeof heuristicValue})`);
+      return null;
+    }
+    fScore.set(startKey, heuristicValue);
     openSet.set(startKey, { q: startQ, r: startR });
+    
+    if (debug) {
+      console.log(`[Pathfinding] Initial setup - startKey: ${startKey}, heuristic: ${heuristicValue}, fScore.get(startKey): ${fScore.get(startKey)}, openSet.size: ${openSet.size}`);
+      console.log(`[Pathfinding] fScore Map contents:`, Array.from(fScore.entries()));
+      console.log(`[Pathfinding] openSet Map contents:`, Array.from(openSet.entries()));
+    }
     
     while (openSet.size > 0) {
       // Get node with lowest fScore
       let current = null;
       let currentKey = null;
-      let lowestF = Infinity;
+      let lowestF = Number.MAX_VALUE;
+      
+      if (debug) console.log(`[Pathfinding] Loop iteration: openSet.size=${openSet.size}, fScore.size=${fScore.size}`);
       
       for (const [key, coord] of openSet) {
-        const f = fScore.get(key) || Infinity;
-        if (f < lowestF) {
+        const f = fScore.get(key);
+        const isDefined = f !== undefined;
+        const isLower = isDefined && f < lowestF;
+        if (debug) console.log(`[Pathfinding]   Checking key: ${key}, f=${f}, isDefined=${isDefined}, isLower=${isLower}, lowestF=${lowestF}`);
+        if (isDefined && f < lowestF) {
           lowestF = f;
           currentKey = key;
           current = coord;
+          if (debug) console.log(`[Pathfinding]   -> Updated currentKey to ${key}`);
         }
       }
       
+      if (debug) console.log(`[Pathfinding] After loop: currentKey=${currentKey}, lowestF=${lowestF}`);
+      
+      if (!currentKey) {
+        if (debug) console.log(`[Pathfinding] No current key found in openSet (lowestF was ${lowestF})`);
+        break; // Exit the loop to avoid infinite loop
+      }
+      
       if (currentKey === goalKey) {
+        if (debug) console.log(`[Pathfinding] Found goal!`);
         return this.reconstructPath(cameFrom, currentKey);
       }
       
@@ -71,6 +119,10 @@ export class PathfindingSystem {
       
       const neighbors = this.hexGrid.getNeighbors(current.q, current.r);
       
+      if (debug && neighbors.length === 0) {
+        console.log(`[Pathfinding] No neighbors for (${current.q}, ${current.r})`);
+      }
+      
       for (const neighbor of neighbors) {
         const neighborKey = HexMath.coordKey(neighbor.q, neighbor.r);
         
@@ -78,24 +130,34 @@ export class PathfindingSystem {
         
         // Check if passable
         if (neighbor.terrain && !neighbor.terrain.isPassable()) {
+          if (debug) console.log(`[Pathfinding]     Neighbor ${neighborKey} is not passable`);
           continue;
         }
         
         const movementCost = neighbor.terrain ? neighbor.terrain.getMovementCost() : 1;
-        const tentativeGScore = (gScore.get(currentKey) || Infinity) + movementCost;
+        const currentGScore = gScore.get(currentKey);
+        if (debug) console.log(`[Pathfinding]     currentKey: ${currentKey}, currentGScore: ${currentGScore}, movementCost: ${movementCost}`);
+        const tentativeGScore = (currentGScore !== undefined ? currentGScore : Infinity) + movementCost;
         
         if (!openSet.has(neighborKey)) {
           openSet.set(neighborKey, { q: neighbor.q, r: neighbor.r });
-        } else if (tentativeGScore >= (gScore.get(neighborKey) || Infinity)) {
-          continue;
+          if (debug) console.log(`[Pathfinding]     Added new neighbor ${neighborKey} to openSet`);
+        } else {
+          const neighborGScore = gScore.get(neighborKey);
+          if (tentativeGScore >= (neighborGScore !== undefined ? neighborGScore : Infinity)) {
+            if (debug) console.log(`[Pathfinding]     Neighbor ${neighborKey} already in openSet with better or equal score`);
+            continue;
+          }
         }
         
         cameFrom.set(neighborKey, currentKey);
         gScore.set(neighborKey, tentativeGScore);
         fScore.set(neighborKey, tentativeGScore + this.heuristic(neighbor.q, neighbor.r, goalQ, goalR));
+        if (debug) console.log(`[Pathfinding]     Updated neighbor ${neighborKey} with gScore=${tentativeGScore}, fScore=${fScore.get(neighborKey)}`);
       }
     }
     
+    if (debug) console.log(`[Pathfinding] A* exhausted openSet without finding goal`);
     return null; // No path found
   }
 

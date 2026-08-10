@@ -17,6 +17,7 @@ export class Unit extends Entity {
     this.path = [];
     this.targetQ = null;
     this.targetR = null;
+    this.accumulatedDistance = 0; // Accumulate movement distance over frames
   }
 
   /**
@@ -24,9 +25,8 @@ export class Unit extends Entity {
    * @param {number} deltaTime - Time since last update in seconds
    */
   update(deltaTime) {
-    if (this.state === 'moving' && this.path.length > 0) {
-      // Movement logic would go here (future enhancement)
-    }
+    // Movement is handled by MovementSystem.update()
+    // This method is kept for future enhancements
   }
 
   /**
@@ -99,5 +99,6 @@ export class Unit extends Entity {
     this.path = [];
     this.targetQ = null;
     this.targetR = null;
+    this.accumulatedDistance = 0; // Reset accumulated distance
   }
 }
